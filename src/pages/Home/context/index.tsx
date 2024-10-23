@@ -7,10 +7,10 @@ import {
   setLoadingVacancies,
   setSuccessLoadVacancies,
   selectVacanciesLoading,
+  selectTotalVacancies,
 } from '../../../store/vacancies/vacanciesSlice';
 import { useAppDispatch } from '../../../store/hooks';
 import { VacanciesService } from '../../../services/vacancies.service';
-import { mockVacancies } from '../../../mocks/vacancies';
 import { DEFAULT_PAGINATION_LIMIT, DEFAULT_PAGINATION_PAGE } from '../../../constants';
 
 interface HomeContextProps {
@@ -33,10 +33,11 @@ export const HomeContextProvider: React.FC<React.PropsWithChildren> = ({ childre
   const [city, setCity] = useState<string>('');
   const skills = useSelector(selectSkills);
   const vacancies = useSelector(selectVacancies);
+  const vacanciesTotal = useSelector(selectTotalVacancies);
   const skillsLoading = useSelector(selectSkillsLoading);
   const vacanciesLoading = useSelector(selectVacanciesLoading);
   const appDispatch = useAppDispatch();
-  const hasMoreVacancies = !!(vacancies && vacancies?.length < mockVacancies.length);
+  const hasMoreVacancies = !!(vacancies && vacancies?.length < vacanciesTotal);
 
   const getVacancies = useCallback(
     async ({ query, city, skills }: VacanciesApiArg) => {
@@ -51,8 +52,13 @@ export const HomeContextProvider: React.FC<React.PropsWithChildren> = ({ childre
             limit: query?.limit || DEFAULT_PAGINATION_LIMIT,
           },
         });
-        if (data) {
-          appDispatch(setSuccessLoadVacancies(data));
+        if (data?.data) {
+          appDispatch(
+            setSuccessLoadVacancies({
+              list: data.data,
+              total: data.total,
+            }),
+          );
         }
       } catch (error) {
         console.log(error);

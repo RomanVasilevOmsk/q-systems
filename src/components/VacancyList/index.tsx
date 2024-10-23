@@ -40,7 +40,7 @@ export const VacancyList = ({ vacancies, loadMoreVacancies, hasMoreVacancies }: 
       height={'70vh'}
       endMessage={<div>You've reached the end</div>}
     >
-      <Box sx={{ gap: '20px', paddingBottom: '5px', display: 'flex', flexDirection: 'column' }}>
+      <Box sx={{ gap: '20px', paddingBottom: '5px', display: 'flex', flexDirection: 'column', paddingRight: '15px' }}>
         {vacancies?.map((item) => <VacancyItem key={item.id} vacancy={item} />)}
       </Box>
     </InfiniteScroll>
